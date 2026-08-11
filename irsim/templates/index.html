@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IR-SIM · Incident Response Simulation</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="cmdbar">
+    <div class="brand">
+      <span class="mark">IR<b>·</b>SIM</span>
+      <span class="sub">Situation Room</span>
+    </div>
+    <div class="clock">
+      <span class="eyebrow">T+</span>
+      <span class="big" id="clock">0.0s</span>
+      <span id="clockEnd">/ 0.0s</span>
+    </div>
+    <div class="progress"><i id="progress"></i></div>
+    <div class="badges">
+      <span class="badge" id="modeBadge">idle</span>
+      <span class="badge" id="speedBadge">—</span>
+      <span class="badge" id="liveBadge">standby</span>
+    </div>
+    <div class="controls">
+      <button class="btn danger" id="btnStop" disabled>Stop</button>
+      <button class="btn" id="btnEnd" disabled>End &amp; score</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat events">
+        <div class="eyebrow">Telemetry events</div>
+        <div class="n" id="cEvents">0</div>
+      </div>
+      <div class="stat alerts">
+        <div class="eyebrow">Alerts raised</div>
+        <div class="n" id="cAlerts">0</div>
+      </div>
+      <div class="stat incidents">
+        <div class="eyebrow">Open / total incidents</div>
+        <div class="n" id="cIncidents">0</div>
+      </div>
+      <div class="stat score">
+        <div class="eyebrow">Resilience score</div>
+        <div class="n" id="cScore">—</div>
+      </div>
+    </div>
+
+    <!-- SETUP (visible while idle) -->
+    <div class="panel" id="setup">
+      <header><h2>Exercise setup</h2><span class="eyebrow">Configure &amp; launch</span></header>
+      <div class="body">
+        <div>
+          <div class="eyebrow" style="margin-bottom:8px">Inject scenarios</div>
+          <div class="scn-list" id="scnList"></div>
+        </div>
+        <div class="controls-row">
+          <div class="field">
+            <label>Response mode</label>
+            <div class="seg" id="modeSeg">
+              <button data-mode="auto" class="on">Automated</button>
+              <button data-mode="manual">Manual (analyst)</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Speed · <span id="speedVal">8</span>×</label>
+            <input type="range" id="speed" min="1" max="30" value="8">
+          </div>
+          <div class="field">
+            <label>Seed (optional)</label>
+            <input type="text" id="seed" placeholder="random">
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="btnStart">▶ Launch exercise</button>
+          </div>
+        </div>
+        <div class="auto-note">
+          Automated mode runs the response playbooks for you and measures how fast it contains each incident.
+          Manual mode hands you the console — you triage and respond live, and the scorecard shows what you missed.
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="grid">
+      <div class="panel" id="incidents">
+        <header>
+          <h2>Incidents</h2>
+          <span class="eyebrow">Detect · Contain · Eradicate · Recover</span>
+        </header>
+        <div class="body" id="incBody">
+          <div class="empty">No incidents yet. Launch an exercise to begin.</div>
+        </div>
+      </div>
+
+      <div class="rail">
+        <div class="panel">
+          <header><h2>Live telemetry</h2><span class="eyebrow">stream</span></header>
+          <div class="body"><div class="feed" id="feed"><div class="empty">idle</div></div></div>
+        </div>
+        <div class="panel">
+          <header><h2>Detection alerts</h2><span class="eyebrow">correlated</span></header>
+          <div class="body"><div class="feed alertfeed" id="alertFeed"><div class="empty">idle</div></div></div>
+        </div>
+        <div class="panel">
+          <header><h2>Response console</h2><span class="eyebrow">log</span></header>
+          <div class="body"><div class="console" id="console"><div class="empty">idle</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCORECARD (after finish) -->
+    <div class="panel" id="scorecard">
+      <header><h2>After-action report</h2><span class="eyebrow">Exercise scorecard</span></header>
+      <div class="body">
+        <div class="score-grid">
+          <div class="dial" id="dial"></div>
+          <div>
+            <div class="metricline" id="metricline"></div>
+            <div class="eyebrow" style="margin-bottom:8px">Score breakdown</div>
+            <div class="components" id="components"></div>
+          </div>
+        </div>
+        <h2 class="section">Identified gaps &amp; recommendations</h2>
+        <div class="gaps" id="gaps"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Core (required to run the tool)
+Flask>=3.0
+
+# Optional — only for scapy_lab/loopback_probe.py (real loopback packets).
+# The simulator itself does NOT need this.
+# scapy>=2.5
